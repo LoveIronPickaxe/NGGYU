@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全屏视频播放</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <video id="fullscreenVideo" autoplay muted loop playsinline>
+        <source src="1.mp4" type="video/mp4">
+        您的浏览器不支持视频播放。
+    </video>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('fullscreenVideo');
+            
+            // 视频元数据加载后尝试全屏
+            video.addEventListener('loadedmetadata', function() {
+                requestFullscreen();
+            });
+            
+            // 视频播放错误处理
+            video.addEventListener('error', function() {
+                console.error('视频加载错误:', video.error);
+                alert('视频加载失败，请检查视频文件路径是否正确。');
+            });
+            
+            // 用户交互后尝试全屏（某些浏览器需要用户操作触发）
+            document.addEventListener('click', function() {
+                if (!isFullscreen()) {
+                    requestFullscreen();
+                }
+            });
+            
+            // 全屏变更事件监听
+            document.addEventListener('fullscreenchange', checkFullscreen);
+            document.addEventListener('webkitfullscreenchange', checkFullscreen);
+            document.addEventListener('mozfullscreenchange', checkFullscreen);
+            document.addEventListener('MSFullscreenChange', checkFullscreen);
+            
+            // 检查是否全屏
+            function isFullscreen() {
+                return document.fullscreenElement ||
+                       document.webkitFullscreenElement ||
+                       document.mozFullScreenElement ||
+                       document.msFullscreenElement;
+            }
+            
+            // 尝试全屏
+            function requestFullscreen() {
+                const element = document.documentElement;
+                
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            }
+            
+            // 检查全屏状态，非全屏时重新请求
+            function checkFullscreen() {
+                if (!isFullscreen()) {
+                    // 延迟一下避免循环请求导致浏览器卡顿
+                    setTimeout(requestFullscreen, 100);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+    
