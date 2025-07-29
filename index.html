@@ -19,6 +19,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 鼠标隐藏类 */
+        .hide-cursor {
+            cursor: none !important;
         }
 
         .container {
@@ -51,17 +57,9 @@
         }
 
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         h1 {
@@ -84,15 +82,8 @@
         }
 
         @keyframes blink {
-            0%,
-            50% {
-                opacity: 1;
-            }
-
-            51%,
-            100% {
-                opacity: 0.7;
-            }
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
         }
 
         .description {
@@ -165,67 +156,73 @@
             margin-top: 20px;
         }
 
-        /* Rick Roll页面样式 */
-        .rickroll-page {
+        /* 第二页面样式 */
+        .second-page {
             display: none;
             text-align: center;
             color: white;
+            width: 100vw;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .rickroll-page.active {
-            display: block;
+        .second-page.active {
+            display: flex;
+            flex-direction: column;
         }
 
-        .rickroll-title {
+        .second-title {
             font-size: 48px;
             margin-bottom: 20px;
             animation: rainbow 3s infinite;
         }
 
         @keyframes rainbow {
-            0% {
-                color: #ff6b6b;
-            }
-
-            16% {
-                color: #4ecdc4;
-            }
-
-            32% {
-                color: #45b7d1;
-            }
-
-            48% {
-                color: #96ceb4;
-            }
-
-            64% {
-                color: #ffeaa7;
-            }
-
-            80% {
-                color: #fd79a8;
-            }
-
-            100% {
-                color: #ff6b6b;
-            }
+            0% { color: #ff6b6b; }
+            16% { color: #4ecdc4; }
+            32% { color: #45b7d1; }
+            48% { color: #96ceb4; }
+            64% { color: #ffeaa7; }
+            80% { color: #fd79a8; }
+            100% { color: #ff6b6b; }
         }
 
         .video-container {
             position: relative;
             width: 100%;
-            max-width: 560px;
+            height: 100%;
+            max-width: 100vw;
+            max-height: 85vh;
             margin: 0 auto;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* 移除 iframe 样式，因为我们将使用 video 元素 */
+        /* 更大的视频尺寸，隐藏所有控件 */
         .video-container video {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: contain;
+            max-height: 85vh;
+            /* 隐藏视频控件 */
+            pointer-events: none;
+        }
+
+        /* 针对不同浏览器的控件隐藏 */
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+        video::-webkit-media-controls-enclosure {
+            display: none !important;
+        }
+        video::-webkit-media-controls-panel {
+            display: none !important;
         }
 
         .back-btn {
@@ -237,82 +234,189 @@
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
+            z-index: 10;
         }
 
         .back-btn:hover {
             background: white;
             color: #333;
         }
+
+        /* 全屏提示层 */
+        .fullscreen-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            font-size: 20px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container" id="container">
-        <!-- 伪装的更新页面 -->
-        <div class="fake-page" id="fakePage">
-            <div class="warning-icon">⚠️</div>
+    <!-- 第一页面 -->
+    <div class="container" id="firstPage">
+        <div class="warning-icon">⚠️</div>
 
-            <div class="urgent">紧急安全更新</div>
+        <div class="urgent">紧急安全更新</div>
 
-            <h1>检测到严重安全漏洞</h1>
+        <h1>检测到严重安全漏洞</h1>
 
-            <div class="description">
-                您的系统存在高危安全风险，需要立即安装关键更新以保护您的数据安全。此更新将修复以下问题：
+        <div class="description">
+            您的系统存在高危安全风险，需要立即安装关键更新以保护您的数据安全。此更新将修复以下问题：
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <span class="checkmark">✓</span>
+                修复远程代码执行漏洞
             </div>
-
-            <div class="features">
-                <div class="feature-item">
-                    <span class="checkmark">✓</span>
-                    修复远程代码执行漏洞
-                </div>
-                <div class="feature-item">
-                    <span class="checkmark">✓</span>
-                    增强数据加密保护
-                </div>
-                <div class="feature-item">
-                    <span class="checkmark">✓</span>
-                    优化系统性能
-                </div>
-                <div class="feature-item">
-                    <span class="checkmark">✓</span>
-                    修复内存泄漏问题
-                </div>
+            <div class="feature-item">
+                <span class="checkmark">✓</span>
+                增强数据加密保护
             </div>
-
-            <button class="update-btn" onclick="startRickRoll()">
-                立即安装更新
-            </button>
-
-            <div class="timer" id="timer">
-                更新将在 <span id="countdown">5:00</span> 后自动开始
+            <div class="feature-item">
+                <span class="checkmark">✓</span>
+                优化系统性能
             </div>
-
-            <div class="small-text">
-                * 更新过程中请勿关闭此页面
+            <div class="feature-item">
+                <span class="checkmark">✓</span>
+                修复内存泄漏问题
             </div>
         </div>
 
-        <!-- Rick Roll页面 -->
-        <div class="rickroll-page" id="rickrollPage">
-            <div class="rickroll-title">🎉 你被 Rick Roll 了！ 🎉</div>
+        <!-- 这个按钮同时负责跳转和全屏 -->
+        <button class="update-btn" id="goToSecondPage">
+            立即安装更新
+        </button>
 
-            <div class="video-container">
-                <!-- 将 iframe 替换为 video 元素 -->
-                <video id="rickrollVideo" controls autoplay>
-                    <source src="1.mp4" type="video/mp4">
-                    您的浏览器不支持视频播放。
-                </video>
-            </div>
+        <div class="timer" id="timer">
+            更新将在 <span id="countdown">5:00</span> 后自动开始
+        </div>
 
-            <button class="back-btn" onclick="goBack()">
-                我认输了，返回 😅
-            </button>
+        <div class="small-text">
+            * 更新过程中请勿关闭此页面
         </div>
     </div>
 
+    <!-- 第二页面 -->
+    <div class="second-page" id="secondPage">
+        <div class="second-title">🎉 你被 Rick Roll 了！ 🎉</div>
+
+        <div class="video-container">
+            <video id="rickrollVideo" autoplay loop>
+                <source src="1.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+        </div>
+
+        <button class="back-btn" id="backToFirstPage">
+            返回上一页 😅
+        </button>
+    </div>
+
     <script>
+        // 获取页面元素
+        const firstPage = document.getElementById('firstPage');
+        const secondPage = document.getElementById('secondPage');
+        const goToSecondPageBtn = document.getElementById('goToSecondPage');
+        const backToFirstPageBtn = document.getElementById('backToFirstPage');
+        const video = document.getElementById('rickrollVideo');
+        const body = document.body;
+
+        // 全屏功能实现
+        async function enterFullscreen() {
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    await document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    await document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    await document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    await document.documentElement.msRequestFullscreen();
+                }
+                console.log('已进入全屏模式');
+                return true;
+            } catch (err) {
+                console.error(`全屏请求失败: ${err.message}`);
+                alert('请允许全屏请求以继续操作');
+                return false;
+            }
+        }
+
+        // 退出全屏
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // 检查是否处于全屏状态
+        function isFullscreen() {
+            return !!(document.fullscreenElement || 
+                     document.mozFullScreenElement || 
+                     document.webkitFullscreenElement || 
+                     document.msFullscreenElement);
+        }
+
+        // 跳转到第二页并确保全屏，同时隐藏鼠标
+        async function goToSecondPage() {
+            // 隐藏鼠标指针
+            body.classList.add('hide-cursor');
+            
+            // 先尝试进入全屏
+            const fullscreenSuccess = await enterFullscreen();
+            
+            // 跳转到第二页
+            firstPage.style.display = 'none';
+            secondPage.classList.add('active');
+            
+            // 加载并播放视频
+            video.src = '1.mp4';
+            video.load();
+            video.play().catch(err => console.log('视频自动播放失败:', err));
+            
+            // 修改页面标题
+            document.title = '哈哈，你被骗了！';
+        }
+
+        // 返回第一页，恢复鼠标显示
+        function backToFirstPage() {
+            // 恢复鼠标指针
+            body.classList.remove('hide-cursor');
+            
+            // 隐藏第二页，显示第一页
+            secondPage.classList.remove('active');
+            firstPage.style.display = 'block';
+            
+            // 暂停视频
+            video.pause();
+            video.src = '';
+            
+            // 恢复页面标题
+            document.title = '系统安全更新 - 重要通知';
+            
+            // 重置倒计时
+            timeLeft = 300;
+        }
+
         // 倒计时功能
         let timeLeft = 300; // 5分钟
+        let countdownTimer;
 
         function updateTimer() {
             const minutes = Math.floor(timeLeft / 60);
@@ -322,75 +426,50 @@
 
             if (timeLeft > 0) {
                 timeLeft--;
-                setTimeout(updateTimer, 1000);
+                countdownTimer = setTimeout(updateTimer, 1000);
             } else {
-                startRickRoll();
+                // 倒计时结束自动跳转
+                goToSecondPage();
             }
         }
 
-        // 启动倒计时
-        // updateTimer();
+        // 绑定按钮事件
+        goToSecondPageBtn.addEventListener('click', goToSecondPage);
+        backToFirstPageBtn.addEventListener('click', backToFirstPage);
 
-        // 启动Rick Roll
-        function startRickRoll() {
-            document.getElementById('fakePage').style.display = 'none';
-            document.getElementById('rickrollPage').classList.add('active');
-
-            // 加载本地视频文件
-            const video = document.getElementById('rickrollVideo');
-            video.src = '1.mp4';
-            video.load(); // 加载视频
-            video.play(); // 播放视频
-
-            // 修改页面标题
-            document.title = '哈哈，你被骗了！';
-        }
-
-        // 返回功能
-        function goBack() {
-            document.getElementById('rickrollPage').classList.remove('active');
-            document.getElementById('fakePage').style.display = 'block';
-            const video = document.getElementById('rickrollVideo');
-            video.src = ''; // 清空视频源
-            video.pause(); // 暂停视频
-            document.title = '系统安全更新 - 重要通知';
-
-            // 重置倒计时
-            timeLeft = 300;
+        // 页面加载完成后初始化
+        window.addEventListener('load', () => {
+            // 显示第一页
+            firstPage.style.display = 'block';
+            
+            // 启动倒计时
             updateTimer();
+            
+            // 监听全屏状态变化
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('msfullscreenchange', handleFullscreenChange);
+        });
+
+        // 处理全屏状态变化
+        function handleFullscreenChange() {
+            if (!isFullscreen() && secondPage.classList.contains('active')) {
+                setTimeout(() => {
+                    if (!isFullscreen()) {
+                        alert('请保持全屏状态以获得最佳体验');
+                    }
+                }, 1000);
+            }
         }
 
-        // 防止用户直接关闭页面的小恶作剧（可选）
+        // 防止用户直接关闭页面
         window.addEventListener('beforeunload', function (e) {
-            if (document.getElementById('rickrollPage').classList.contains('active')) {
+            if (secondPage.classList.contains('active')) {
                 e.preventDefault();
                 e.returnValue = '真的要离开吗？歌还没听完呢！';
             }
         });
-
-        // 先全屏
-        function requestFullscreen(element) {
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.webkitRequestFullscreen) { /* Safari */
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) { /* IE11 */
-                element.msRequestFullscreen();
-            }
-        }
-
-        // 页面加载完成后先全屏再显示内容
-        window.onload = function () {
-            // 先全屏
-            requestFullscreen(document.documentElement);
-
-            // 延迟显示内容，确保全屏生效
-            setTimeout(function () {
-                document.getElementById('container').style.display = 'block';
-                // 启动倒计时
-                updateTimer();
-            }, 500);
-        };
     </script>
 </body>
 
