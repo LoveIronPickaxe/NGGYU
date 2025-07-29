@@ -1,91 +1,397 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>你被骗了</title>
+    <title>系统安全更新 - 重要通知</title>
     <style>
-        body, html {
+        * {
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            box-sizing: border-box;
         }
-        video {
-            position: fixed;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: none; /* 初始隐藏容器 */
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+        }
+
+        .warning-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .urgent {
+            background: #ff4757;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0.7;
+            }
+        }
+
+        .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .features {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkmark {
+            color: #27ae60;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .update-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .update-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .update-btn:active {
+            transform: translateY(0);
+        }
+
+        .timer {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .small-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+
+        /* Rick Roll页面样式 */
+        .rickroll-page {
+            display: none;
+            text-align: center;
+            color: white;
+        }
+
+        .rickroll-page.active {
+            display: block;
+        }
+
+        .rickroll-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: rainbow 3s infinite;
+        }
+
+        @keyframes rainbow {
+            0% {
+                color: #ff6b6b;
+            }
+
+            16% {
+                color: #4ecdc4;
+            }
+
+            32% {
+                color: #45b7d1;
+            }
+
+            48% {
+                color: #96ceb4;
+            }
+
+            64% {
+                color: #ffeaa7;
+            }
+
+            80% {
+                color: #fd79a8;
+            }
+
+            100% {
+                color: #ff6b6b;
+            }
+        }
+
+        .video-container {
+            position: relative;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 560px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 移除 iframe 样式，因为我们将使用 video 元素 */
+        .video-container video {
+            width: 100%;
+            height: auto;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: white;
+            color: #333;
         }
     </style>
 </head>
+
 <body>
-    <video id="fullscreenVideo" autoplay muted loop playsinline>
-        <source src="1.mp4" type="video/mp4">
-        您的浏览器不支持视频播放。
-    </video>
+    <div class="container" id="container">
+        <!-- 伪装的更新页面 -->
+        <div class="fake-page" id="fakePage">
+            <div class="warning-icon">⚠️</div>
+
+            <div class="urgent">紧急安全更新</div>
+
+            <h1>检测到严重安全漏洞</h1>
+
+            <div class="description">
+                您的系统存在高危安全风险，需要立即安装关键更新以保护您的数据安全。此更新将修复以下问题：
+            </div>
+
+            <div class="features">
+                <div class="feature-item">
+                    <span class="checkmark">✓</span>
+                    修复远程代码执行漏洞
+                </div>
+                <div class="feature-item">
+                    <span class="checkmark">✓</span>
+                    增强数据加密保护
+                </div>
+                <div class="feature-item">
+                    <span class="checkmark">✓</span>
+                    优化系统性能
+                </div>
+                <div class="feature-item">
+                    <span class="checkmark">✓</span>
+                    修复内存泄漏问题
+                </div>
+            </div>
+
+            <button class="update-btn" onclick="startRickRoll()">
+                立即安装更新
+            </button>
+
+            <div class="timer" id="timer">
+                更新将在 <span id="countdown">5:00</span> 后自动开始
+            </div>
+
+            <div class="small-text">
+                * 更新过程中请勿关闭此页面
+            </div>
+        </div>
+
+        <!-- Rick Roll页面 -->
+        <div class="rickroll-page" id="rickrollPage">
+            <div class="rickroll-title">🎉 你被 Rick Roll 了！ 🎉</div>
+
+            <div class="video-container">
+                <!-- 将 iframe 替换为 video 元素 -->
+                <video id="rickrollVideo" controls autoplay>
+                    <source src="1.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+
+            <button class="back-btn" onclick="goBack()">
+                我认输了，返回 😅
+            </button>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const video = document.getElementById('fullscreenVideo');
-            
-            // 视频元数据加载后尝试全屏
-            video.addEventListener('loadedmetadata', function() {
-                requestFullscreen();
-            });
-            
-            // 视频播放错误处理
-            video.addEventListener('error', function() {
-                console.error('视频加载错误:', video.error);
-                alert('视频加载失败，请检查视频文件路径是否正确。');
-            });
-            
-            // 用户交互后尝试全屏（某些浏览器需要用户操作触发）
-            document.addEventListener('click', function() {
-                if (!isFullscreen()) {
-                    requestFullscreen();
-                }
-            });
-            
-            // 全屏变更事件监听
-            document.addEventListener('fullscreenchange', checkFullscreen);
-            document.addEventListener('webkitfullscreenchange', checkFullscreen);
-            document.addEventListener('mozfullscreenchange', checkFullscreen);
-            document.addEventListener('MSFullscreenChange', checkFullscreen);
-            
-            // 检查是否全屏
-            function isFullscreen() {
-                return document.fullscreenElement ||
-                       document.webkitFullscreenElement ||
-                       document.mozFullScreenElement ||
-                       document.msFullscreenElement;
+        // 倒计时功能
+        let timeLeft = 300; // 5分钟
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('countdown').textContent =
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                startRickRoll();
             }
-            
-            // 尝试全屏
-            function requestFullscreen() {
-                const element = document.documentElement;
-                
-                if (element.requestFullscreen) {
-                    element.requestFullscreen();
-                } else if (element.webkitRequestFullscreen) {
-                    element.webkitRequestFullscreen();
-                } else if (element.mozRequestFullScreen) {
-                    element.mozRequestFullScreen();
-                } else if (element.msRequestFullscreen) {
-                    element.msRequestFullscreen();
-                }
-            }
-            
-            // 检查全屏状态，非全屏时重新请求
-            function checkFullscreen() {
-                if (!isFullscreen()) {
-                    // 延迟一下避免循环请求导致浏览器卡顿
-                    setTimeout(requestFullscreen, 100);
-                }
+        }
+
+        // 启动倒计时
+        // updateTimer();
+
+        // 启动Rick Roll
+        function startRickRoll() {
+            document.getElementById('fakePage').style.display = 'none';
+            document.getElementById('rickrollPage').classList.add('active');
+
+            // 加载本地视频文件
+            const video = document.getElementById('rickrollVideo');
+            video.src = '1.mp4';
+            video.load(); // 加载视频
+            video.play(); // 播放视频
+
+            // 修改页面标题
+            document.title = '哈哈，你被骗了！';
+        }
+
+        // 返回功能
+        function goBack() {
+            document.getElementById('rickrollPage').classList.remove('active');
+            document.getElementById('fakePage').style.display = 'block';
+            const video = document.getElementById('rickrollVideo');
+            video.src = ''; // 清空视频源
+            video.pause(); // 暂停视频
+            document.title = '系统安全更新 - 重要通知';
+
+            // 重置倒计时
+            timeLeft = 300;
+            updateTimer();
+        }
+
+        // 防止用户直接关闭页面的小恶作剧（可选）
+        window.addEventListener('beforeunload', function (e) {
+            if (document.getElementById('rickrollPage').classList.contains('active')) {
+                e.preventDefault();
+                e.returnValue = '真的要离开吗？歌还没听完呢！';
             }
         });
+
+        // 先全屏
+        function requestFullscreen(element) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) { /* Safari */
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { /* IE11 */
+                element.msRequestFullscreen();
+            }
+        }
+
+        // 页面加载完成后先全屏再显示内容
+        window.onload = function () {
+            // 先全屏
+            requestFullscreen(document.documentElement);
+
+            // 延迟显示内容，确保全屏生效
+            setTimeout(function () {
+                document.getElementById('container').style.display = 'block';
+                // 启动倒计时
+                updateTimer();
+            }, 500);
+        };
     </script>
 </body>
+
 </html>
-    
